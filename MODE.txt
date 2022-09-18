@@ -1,0 +1,16 @@
+;In following program, we create a square wave of 50% duty cycle (with equal portions high and low)
+;on the p1.5 bit. Timer 0 is used to generate the time delay. Analyizing the program by calculateing the delay generating and assuming XTAL =11.0592MHz
+;pRogram:
+org 0000h
+	mov tmod ,#01;Timer 0 mode1(16-bit mode)
+here:	mov tl0,#0f2h;tl0=f2H,the low byte
+	mov th0,#0ffh;Th0=ffh,the high byte
+	cpl p1.5;toogle pl.5(pl instruction logically complents the value of the specified 				destination operand and stores the result back in the destination operand)
+	acall delay 
+	sjmp here;short jump
+	delay:
+	setb tr0;start the timer 0
+again:	jnb tf0,again;monitor timer flag 0 until it rolls over
+	clr tr0;stop timer 0
+	clr tf0;clear timer flag
+	ret;return from subroutine
